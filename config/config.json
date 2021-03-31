@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "Pace1996",
+    "database": "janjiku_id",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 5432
+  },
+  "test": {
+    "username": "postgres",
+    "password": "Pace1996",
+    "database": "janjiku_id",
+    "host": "localhost",
+    "dialect": "postgres",
+    "port": 5432
+  },
+  "production": {
+    "username": "pacegaga_pace",
+    "password": "P@ce1996",
+    "database": "pacegaga_janjiku_id",
+    "host": "45.33.24.136",
+    "dialect": "postgres",
+    "port": 5432
+  }
+}
