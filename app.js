@@ -10,8 +10,8 @@ const init = async () => {
     routes: { cors: true },
   })
 
-  await sequelize.authenticate()
-  console.log('database connected')
+  // await sequelize.authenticate()
+  // console.log('database connected')
 
   // routing index
   server.route({
