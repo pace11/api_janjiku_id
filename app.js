@@ -1,17 +1,17 @@
 const Hapi = require('@hapi/hapi')
-// const { sequelize, orders, users } = require('./models')
-// const { decryptAES, uuid } = require('./utils')
+const { sequelize, orders, users } = require('./models')
+const { decryptAES, uuid } = require('./utils')
 require('dotenv').config()
 
 const init = async () => {
   const server = Hapi.server({
-    port: 3100,
+    port: process.env.PORT,
     host: 'localhost',
     routes: { cors: true },
   })
 
-  // await sequelize.authenticate()
-  // console.log('database connected')
+  await sequelize.authenticate()
+  console.log('database connected')
 
   // routing index
   server.route({
@@ -25,7 +25,75 @@ const init = async () => {
         data: [],
       }
       try {
-        response.message = 'Welcome to the API Janjiku'
+        response.message = 'Welcome to the API Janjiku.id'
+        return response
+      } catch (error) {
+        console.log('Error users ===>', error)
+      }
+    },
+  })
+
+  // routing to login user
+  server.route({
+    method: 'POST',
+    path: '/login',
+    handler: async (request, h) => {
+      let response = {
+        statusCode: 200,
+        error: false,
+        message: 'Ok',
+        data: [],
+      }
+      try {
+        const { email, password } = request.payload
+        const user = await users.findOne({
+          where: { email },
+          includes: 'users',
+        })
+        if (decryptAES(user.password) !== password) {
+          response.statusCode = 404
+          response.error = true
+          response.message = 'Not found'
+          response.data = null
+        } else {
+          response.data = user
+        }
+        return response
+      } catch (error) {
+        console.log('Error users ===>', error)
+      }
+    },
+  })
+
+  // routing to submit orders 
+  server.route({
+    method: 'POST',
+    path: '/register',
+    handler: async (request, h) => {
+      let response = {
+        statusCode: 200,
+        error: false,
+        message: 'Ok',
+        data: [],
+      }
+      try {
+        const { fullname, phoneNumber, type, template } = request.payload
+        const order = await orders.create({
+          numberOrder: uuid(),
+          fullname: fullname,
+          phoneNumber: phoneNumber,
+          type: type,
+          template: template,
+          status: 0,
+        })
+        if (order) {
+          response.data = order
+        } else {
+          response.statusCode = 404
+          response.error = true
+          response.message = 'Not found'
+          response.data = null
+        }
         return response
       } catch (error) {
         console.log('Error users ===>', error)
@@ -160,74 +228,6 @@ const init = async () => {
   //       if (product === 1) {
   //         return response
   //       }
-  //     } catch (error) {
-  //       console.log('Error users ===>', error)
-  //     }
-  //   },
-  // })
-
-  // // routing to login user
-  // server.route({
-  //   method: 'POST',
-  //   path: '/login',
-  //   handler: async (request, h) => {
-  //     let response = {
-  //       statusCode: 200,
-  //       error: false,
-  //       message: 'Ok',
-  //       data: [],
-  //     }
-  //     try {
-  //       const { email, password } = request.payload
-  //       const user = await users.findOne({
-  //         where: { email },
-  //         includes: 'users',
-  //       })
-  //       if (decryptAES(user.password) !== password) {
-  //         response.statusCode = 404
-  //         response.error = true
-  //         response.message = 'Not found'
-  //         response.data = null
-  //       } else {
-  //         response.data = user
-  //       }
-  //       return response
-  //     } catch (error) {
-  //       console.log('Error users ===>', error)
-  //     }
-  //   },
-  // })
-
-  // // routing to submit orders 
-  // server.route({
-  //   method: 'POST',
-  //   path: '/register',
-  //   handler: async (request, h) => {
-  //     let response = {
-  //       statusCode: 200,
-  //       error: false,
-  //       message: 'Ok',
-  //       data: [],
-  //     }
-  //     try {
-  //       const { fullname, phoneNumber, type, template } = request.payload
-  //       const order = await orders.create({
-  //         numberOrder: uuid(),
-  //         fullname: fullname,
-  //         phoneNumber: phoneNumber,
-  //         type: type,
-  //         template: template,
-  //         status: 0,
-  //       })
-  //       if (order) {
-  //         response.data = order
-  //       } else {
-  //         response.statusCode = 404
-  //         response.error = true
-  //         response.message = 'Not found'
-  //         response.data = null
-  //       }
-  //       return response
   //     } catch (error) {
   //       console.log('Error users ===>', error)
   //     }
