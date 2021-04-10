@@ -1,11 +1,11 @@
 const Hapi = require('@hapi/hapi')
-const { sequelize, orders, users } = require('./models')
+// const { sequelize, orders, users } = require('./models')
 const { decryptAES, uuid } = require('./utils')
 require('dotenv').config()
 
 const init = async () => {
   const server = Hapi.server({
-    port: process.env.PORT,
+    port: process.env.PORT || 6100,
     host: 'localhost',
     routes: { cors: true },
   })
@@ -65,7 +65,7 @@ const init = async () => {
   //   },
   // })
 
-  // routing to submit orders 
+  // routing to submit orders
   // server.route({
   //   method: 'POST',
   //   path: '/register',
