@@ -6,7 +6,7 @@ require('dotenv').config()
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 6100,
-    host: 'localhost',
+    host: process.env.HOST || '128.199.187.254', 
     routes: { cors: true },
   })
 
