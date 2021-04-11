@@ -1,17 +1,17 @@
-const Hapi = require('@hapi/hapi')
-// const { sequelize, orders, users } = require('./models')
-const { decryptAES, uuid } = require('./utils')
 require('dotenv').config()
+const Hapi = require('@hapi/hapi')
+const { sequelize, Orders } = require('./models')
+const { decryptAES, uuid } = require('./utils')
 
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 6100,
-    host: process.env.HOST || '128.199.187.254', 
+    host: process.env.HOST || '128.199.187.254',
     routes: { cors: true },
   })
 
-  // await sequelize.authenticate()
-  // console.log('database connected')
+  await sequelize.authenticate()
+  console.log('database connected')
 
   // routing index
   server.route({
@@ -65,62 +65,62 @@ const init = async () => {
   //   },
   // })
 
-  // routing to submit orders
-  // server.route({
-  //   method: 'POST',
-  //   path: '/register',
-  //   handler: async (request, h) => {
-  //     let response = {
-  //       statusCode: 200,
-  //       error: false,
-  //       message: 'Ok',
-  //       data: [],
-  //     }
-  //     try {
-  //       const { fullname, phoneNumber, type, template } = request.payload
-  //       const order = await orders.create({
-  //         numberOrder: uuid(),
-  //         fullname: fullname,
-  //         phoneNumber: phoneNumber,
-  //         type: type,
-  //         template: template,
-  //         status: 0,
-  //       })
-  //       if (order) {
-  //         response.data = order
-  //       } else {
-  //         response.statusCode = 404
-  //         response.error = true
-  //         response.message = 'Not found'
-  //         response.data = null
-  //       }
-  //       return response
-  //     } catch (error) {
-  //       console.log('Error users ===>', error)
-  //     }
-  //   },
-  // })
+  // routing to post orders
+  server.route({
+    method: 'POST',
+    path: '/register',
+    handler: async (request, h) => {
+      let response = {
+        statusCode: 200,
+        error: false,
+        message: 'Ok',
+        data: [],
+      }
+      try {
+        const { fullname, phoneNumber, type, template } = request.payload
+        const order = await Orders.create({
+          numberOrder: uuid(),
+          fullname: fullname,
+          phoneNumber: phoneNumber,
+          type: type,
+          template: template,
+          status: 0,
+        })
+        if (order) {
+          response.data = order
+        } else {
+          response.statusCode = 404
+          response.error = true
+          response.message = 'Not found'
+          response.data = null
+        }
+        return response
+      } catch (error) {
+        console.log('Error users ===>', error)
+      }
+    },
+  })
 
-  // // routing to get all products
-  // server.route({
-  //   method: 'GET',
-  //   path: '/products',
-  //   handler: async (request, h) => {
-  //     let response = {
-  //       statusCode: 200,
-  //       error: false,
-  //       message: 'Ok',
-  //       data: [],
-  //     }
-  //     try {
-  //       const products = await Products.findAll()
-  //       response.data = products
-  //       return response
-  //     } catch (error) {
-  //       console.log('Error users ===>', error)
-  //     }
-  //   },
-  // })
+  // routing to get all orders
+  server.route({
+    method: 'GET',
+    path: '/orders',
+    handler: async (request, h) => {
+      let response = {
+        statusCode: 200,
+        error: false,
+        message: 'Ok',
+        data: [],
+      }
+      try {
+        const orders = await Orders.findAll()
+        response.data = orders
+        return response
+      } catch (error) {
+        console.log('Error users ===>', error)
+      }
+    },
+  })
 
   // // routing to get specific product by id
   // server.route({
