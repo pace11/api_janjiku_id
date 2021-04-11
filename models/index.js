@@ -8,7 +8,7 @@ const env = process.env.DB_ENV || 'production'
 const config = require(__dirname + '/../config/config.json')[env]
 const db = {}
 
-console.log('dafa', process.env.DB_ENV)
+console.log('env ==>', env)
 
 let sequelize
 if (config.use_env_variable) {
